@@ -1,5 +1,8 @@
 # Adolphus - Multi-Camera System Coverage Modeling Suite
 
+## Catherine's fork Overview
+
+I'm in the process of adding [pyglet](http://pyglet.org) as an alternate 3D library
 
 ## Overview
 
@@ -7,6 +10,7 @@ Adolphus is a set of tools for modeling and visualizing the coverage of
 multi-camera systems.
 
 See our [screencast] [screencast] for an introduction.
+
 
 
 ## Dependencies

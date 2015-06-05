@@ -1,0 +1,5 @@
+pyglet (1.2.2)
+PyYAML (3.10)
+Cython (0.20.1post0)
+pycollada (0.4)
+setuptools (3.3)

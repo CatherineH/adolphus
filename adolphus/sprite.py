@@ -7,11 +7,19 @@ Visual succeeds.
 @contact: mavrin1@uwindsor.ca
 @license: GPL-3
 """
+from sys import platform as _platform
+if _platform == "darwin" or _platform == "win32":
+    import visual
+    VIS_LIB = True
+    vis_type = visual.frame
+elif _platform == "linux" or _platform == "linux2":
+    import pyglet
+    VIS_LIB = False
+    vis_type = pyglet.sprite.Sprite
+    emissive_material = {'GL_EMISSION': 0.5}
 
-import visual
 
-
-class Sprite(visual.frame):
+class Sprite(vis_type):
     """\
     Sprite class.
 
@@ -37,7 +45,10 @@ class Sprite(visual.frame):
         @param frame: The parent frame for the sprite.
         @type frame: C{visual.frame}
         """
-        super(Sprite, self).__init__(frame=frame)
+        if VIS_LIB:
+            super(Sprite, self).__init__(frame=frame)
+        else:
+            super(Sprite, self).__init__(group=frame)
         self.primitives = primitives
         self.members = []
         for primitive in self.primitives:
