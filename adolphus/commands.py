@@ -46,12 +46,15 @@ class CommandError(Exception):
 def command(f):
     def wrapped(ex, args, response='pickle'):
         assert response in ['pickle', 'csv', 'text']
+        '''
         try:
             return f(ex, args, response)
         except CommandError as e:
             raise e
         except Exception, e:
             raise CommandError('%s: %s' % (type(e).__name__, e))
+        '''
+        return f(ex, args, response)
     wrapped.__doc__ = f.__doc__
     commands[f.__name__] = wrapped
     return wrapped

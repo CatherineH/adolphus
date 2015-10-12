@@ -160,14 +160,18 @@ class YAMLParser(object):
                         for i in range(3)]})
             parsed_triangles = []
             for triangle in triangles:
+                print triangle
                 try:
                     triangle['pose'] = self._parse_pose(triangle['pose'])
                 except KeyError:
                     pass
+                '''
                 try:
                     parsed_triangles.append(OcclusionTriangle(**triangle))
                 except ValueError:
                     pass
+                '''
+                parsed_triangles.append(OcclusionTriangle(**triangle))
             return parsed_triangles
         except KeyError:
             return []
@@ -187,6 +191,7 @@ class YAMLParser(object):
             robot = yaml.load(open(robot_file, 'r'))
             path = os.path.split(robot_file)[0]
         links = robot['links']
+        print links
         for link in links:
             link['offset'] = self._parse_pose(link['offset'])
             link['triangles'] = self._parse_triangles(link, path)

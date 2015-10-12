@@ -13,9 +13,11 @@ if _platform == "darwin" or _platform == "win32":
     vis_type = visual.display
     emissive_material = visual.materials.emissive
 elif _platform == "linux" or _platform == "linux2":
-    import pyglet
+    from pygletHelper.common.create_display import Display
+    from pyglet.text import Label
+    import pygletHelper.common as visual
     VIS_LIB = False
-    vis_type = pyglet.window.Window
+    vis_type = Display
     emissive_material = {'GL_EMISSION': 0.5}
 from threading import Thread, Event
 from math import copysign
@@ -36,9 +38,6 @@ class Display(vis_type):
     useful methods for controlling the view, and some messaging and prompting
     functionality.
     """
-    def __init__(self):
-        super(Display, self).__init__()
-        self.label = pyglet.text.Label('Hello, world!')
     def __init__(self, zoom=False, center=(0, 0, 0), title='Adolphus Viewer'):
         """\
         Constructor.
@@ -48,13 +47,8 @@ class Display(vis_type):
         @param center: Location of the center point.
         @type center: C{tuple} of C{float}
         """
-        print type(vis_type)
-        if VIS_LIB:
-            super(Display, self).__init__(title=title, center=center,
+        super(Display, self).__init__(title=title, center=center,
                 background=(1, 1, 1), foreground=(0.3, 0.3, 0.3), visible=False)
-        else:
-            #not sure how to implement background or foreground
-            super(Display, self).__init__(caption=title, visible=False)
         self.forward = (-1, -1, -1)
         self.up = (0, 0, 1)
         self.userzoom = zoom
@@ -70,7 +64,7 @@ class Display(vis_type):
                 height= int(VISUAL_SETTINGS['textsize'] * 1.5), color=(1, 1, 1),
                 visible=False)
         else:
-            self._messagebox = pyglet.text.Label('',
+            self._messagebox = Label('',
                           font_name='Times New Roman',
                           font_size=int(VISUAL_SETTINGS['textsize']*1.5),
                           x=self.width//2, y=self.height//2,
@@ -208,8 +202,10 @@ class Experiment(Thread):
             raise VisualizationError('visual module not loaded')
 
         # displays
+        print "Creating display"
         self.display = Display(zoom=zoom)
         Visualizable.displays['main'] = self.display
+        print "selecting display"
         if VIS_LIB:
             self.display.select()
         else:
@@ -252,12 +248,15 @@ class Experiment(Thread):
                                'color':         [0, 0, 1],
                                'material':      visual.materials.emissive})
             axis[i] += 15
+            # TODO: figure out how to implement label class!
+            '''
             primitives.append({'type':          'label',
                                'pos':           axis,
                                'text':          axname,
                                'height':        VISUAL_SETTINGS['textsize'],
                                'color':         [1, 1, 1],
                                'background':    [0, 0, 0]})
+            '''
         self.axes = Sprite(primitives)
         self.axes.visible = False
 
@@ -379,6 +378,7 @@ class Experiment(Thread):
         cmd, args = cmd.split()[0], cmd.split()[1:]
         if cmd not in commands.commands:
             raise commands.CommandError('invalid command')
+        '''
         try:
             return commands.commands[cmd](self, args, response=response)
         except commands.CommandError as e:
@@ -390,6 +390,9 @@ class Experiment(Thread):
                         es += '\n' + line % cmd
                         break
             raise commands.CommandError(es)
+        '''
+        return commands.commands[cmd](self, args, response=response)
+
 
     def run(self):
         """\

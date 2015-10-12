@@ -12,3 +12,4 @@ adolphus/*.html
 demos/follow/vgraph.pickle
 *.DS_Store
 *~
+.idea

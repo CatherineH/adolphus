@@ -13,9 +13,10 @@ if _platform == "darwin" or _platform == "win32":
     VIS_LIB = True
     vis_type = visual.frame
 elif _platform == "linux" or _platform == "linux2":
-    import pyglet
+    from pygletHelper.objects.frame import Frame
     VIS_LIB = False
-    vis_type = pyglet.sprite.Sprite
+    vis_type = Frame
+    import pygletHelper.common as visual
     emissive_material = {'GL_EMISSION': 0.5}
 
 
@@ -45,12 +46,15 @@ class Sprite(vis_type):
         @param frame: The parent frame for the sprite.
         @type frame: C{visual.frame}
         """
+        self.members = []
+
         if VIS_LIB:
             super(Sprite, self).__init__(frame=frame)
         else:
-            super(Sprite, self).__init__(group=frame)
+            print "frame: "
+            print frame
+            super(Sprite, self).__init__(other=frame)
         self.primitives = primitives
-        self.members = []
         for primitive in self.primitives:
             if 'material' in primitive \
             and isinstance(primitive['material'], str):
@@ -61,7 +65,7 @@ class Sprite(vis_type):
                 primitive['material'] = visual.materials.texture(data=\
                     visual.materials.loadTGA(primitive['texture']),
                     mapping=primitive['mapping'])
-            self.members.append(getattr(visual, primitive['type'])(**primitive))
+            self.members.append(getattr(visual.primitives, primitive['type'])(**primitive))
             self.members[-1].frame = self
         self._opacity = 1.0
         self._highlighted = False
@@ -97,7 +101,7 @@ class Sprite(vis_type):
         # Explicitly set child visibility for memory management.
         for member in self.members:
             member.visible = value
-        super(Sprite, self).set_visible(value)
+        #super(Sprite, self).visible(value)
 
     visible = property(get_visible, set_visible)
 

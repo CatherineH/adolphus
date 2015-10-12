@@ -8,10 +8,15 @@ Posable objects module.
 """
 
 VISUAL_ENABLED = True
-try:
+
+from sys import platform as _platform
+if _platform == "darwin" or _platform == "win32":
     import visual
-except ImportError:
-    VISUAL_ENABLED = False
+elif _platform == "linux" or _platform == "linux2":
+    import Polygon as visual
+
+print "in Posable:"
+print visual.Polygon()
 
 from geometry import Point, Pose, Triangle
 from geometry cimport Pose
